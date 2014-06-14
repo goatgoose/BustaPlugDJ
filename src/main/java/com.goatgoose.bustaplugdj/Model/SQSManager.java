@@ -7,7 +7,7 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
-import org.bukkit.Bukkit; 
+import org.bukkit.Bukkit;
 
 public class SQSManager {
 
