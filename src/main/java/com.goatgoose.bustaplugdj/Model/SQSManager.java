@@ -3,12 +3,11 @@ package com.goatgoose.bustaplugdj.Model;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
-import org.bukkit.Bukkit;
+import org.bukkit.Bukkit; 
 
 public class SQSManager {
 
