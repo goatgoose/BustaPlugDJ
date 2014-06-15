@@ -1,17 +1,21 @@
 package com.goatgoose.bustaplugdj.Model;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class PlugDJPlayer {
 
-    private BustaPlugDJ plugin;
+    public enum Status {
+        DJ,
+        AUDIENCE,
+        SETUP_FIREWORKS,
+        ABSENT
+    }
+
+    private Status status = Status.ABSENT;
 
     private Player player;
-
-    private boolean isDJ = false;
-
-    private Stage stage;
 
     public PlugDJPlayer(Player player) {
         this.player = player;
@@ -21,12 +25,12 @@ public class PlugDJPlayer {
         return player;
     }
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
-    public Stage getStage() {
-        return stage;
+    public Status getStatus() {
+        return status;
     }
 
 }
