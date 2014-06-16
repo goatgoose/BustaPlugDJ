@@ -26,5 +26,45 @@
             <artifactId>aws-java-sdk</artifactId>
             <version>1.7.12</version>
         </dependency>
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <scope>provided</scope>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-server</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-client</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.tyrus</groupId>
+            <artifactId>tyrus-container-grizzly</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>WorldEdit</groupId>
+            <artifactId>WorldEdit</artifactId>
+            <scope>system</scope>
+            <version>5.6</version>
+            <systemPath>${basedir}/WorldEdit.jar</systemPath>
+        </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${project.build.directory}/src/main/java/com/goatgoose/bustaplugdj/</directory>
+                <includes>
+                    <include>plugin.yml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
 </project>
