@@ -1,14 +1,13 @@
 package com.goatgoose.bustaplugdj;
 
-import com.goatgoose.bustaplugdj.EventHandlers.PlayerListener;
-import com.goatgoose.bustaplugdj.Model.PlugDJPlayer;
-import com.goatgoose.bustaplugdj.Model.PlugDJServerEndpoint;
-import com.goatgoose.bustaplugdj.Model.Stage;
+import com.goatgoose.bustaplugdj.eventHandlers.PlayerListener;
+import com.goatgoose.bustaplugdj.model.PlugDJPlayer;
+import com.goatgoose.bustaplugdj.model.PlugDJServerEndpoint;
+import com.goatgoose.bustaplugdj.model.Stage;
+import com.goatgoose.bustaplugdj.tasks.StartSocketServerTask;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,8 +16,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.glassfish.tyrus.server.Server;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 
 public class BustaPlugDJ extends JavaPlugin {
@@ -36,9 +33,13 @@ public class BustaPlugDJ extends JavaPlugin {
     // - Plug.dj and minecraft chat sync (only in stage)
     // - Fake npc audience and djs for plug.dj users who aren't in minecraft (dancing in minecraft based on wooting)
     // - BustaPlugDJClient.js running on every mc client to control plug.dj individually (ie volume control, wooting and mehing, song select) and new TCP server to handle them
-    //   - Auto woot based on how much you're dancing in minecraft xD
-    // - Competition mode that allows users to compete for votes head to head
+    //   - Auto woot/meh based on how much you're dancing in minecraft xD
+    //   - DJ would have control over everyone's volume, so add options to fade in/out and boost for drops
+    // - Competition mode that allows users to take turns competing for votes
     // - Commandless user interface for joining/djing/leaving stage
+    // - Save setup to file and parse in onEnable()
+    // - Better dance floor with lights
+    // - More options for display than just flashDisplay()
 
     private HashMap<String, PlugDJPlayer> plugDJPlayers = new HashMap<String, PlugDJPlayer>();
 
@@ -56,12 +57,14 @@ public class BustaPlugDJ extends JavaPlugin {
         }
 
         Server webSocketServer = new Server("localhost", 8025, "/websockets", PlugDJServerEndpoint.class);
-
         try {
             webSocketServer.start();
         } catch(Exception e) {
-            throw new RuntimeException(e);
+            Bukkit.broadcastMessage("Unable to launch socket server:");
+            e.printStackTrace();
         }
+
+        //new StartSocketServerTask(webSocketServer).runTaskAsynchronously(this);
     }
 
     @Override

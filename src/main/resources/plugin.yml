@@ -1,0 +1,15 @@
+name: BustaPlugDJ
+main: com.goatgoose.bustaplugdj.BustaPlugDJ
+version: 0.1
+depend: [WorldEdit]
+
+commands:
+  "plugdj":
+    description: base command for plugin
+    usage: /plugdj
+    permission: plugdj.everything
+
+permissions:
+  plugdj.everything:
+    description: access to every command
+    default: true

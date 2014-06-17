@@ -1,7 +1,5 @@
-package com.goatgoose.bustaplugdj.Model;
+package com.goatgoose.bustaplugdj.model;
 
-import com.goatgoose.bustaplugdj.BustaPlugDJ;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class PlugDJPlayer {

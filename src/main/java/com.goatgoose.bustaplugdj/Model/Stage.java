@@ -1,13 +1,11 @@
-package com.goatgoose.bustaplugdj.Model;
+package com.goatgoose.bustaplugdj.model;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
-import com.goatgoose.bustaplugdj.Tasks.TurnOffRedstoneBlocksTask;
-import org.bukkit.Bukkit;
+import com.goatgoose.bustaplugdj.tasks.TurnOffRedstoneBlocksTask;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Stage {
 

@@ -1,6 +1,6 @@
-package com.goatgoose.bustaplugdj.Tasks;
+package com.goatgoose.bustaplugdj.tasks;
 
-import com.goatgoose.bustaplugdj.Model.FireworkLauncher;
+import com.goatgoose.bustaplugdj.model.FireworkLauncher;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class LaunchFireworkTask extends BukkitRunnable {

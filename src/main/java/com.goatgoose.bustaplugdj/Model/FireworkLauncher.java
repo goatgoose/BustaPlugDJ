@@ -1,12 +1,9 @@
-package com.goatgoose.bustaplugdj.Model;
+package com.goatgoose.bustaplugdj.model;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
-import com.goatgoose.bustaplugdj.Tasks.LaunchFireworkTask;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 

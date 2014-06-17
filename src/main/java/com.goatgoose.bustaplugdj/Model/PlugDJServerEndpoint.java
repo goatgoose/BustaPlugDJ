@@ -1,6 +1,5 @@
-package com.goatgoose.bustaplugdj.Model;
+package com.goatgoose.bustaplugdj.model;
 
-import com.goatgoose.bustaplugdj.BustaPlugDJ;
 import org.bukkit.Bukkit;
 
 import javax.websocket.*;

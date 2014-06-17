@@ -1,9 +1,8 @@
-package com.goatgoose.bustaplugdj.EventHandlers;
+package com.goatgoose.bustaplugdj.eventHandlers;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
-import com.goatgoose.bustaplugdj.Model.FireworkLauncher;
-import com.goatgoose.bustaplugdj.Model.PlugDJPlayer;
-import org.bukkit.Bukkit;
+import com.goatgoose.bustaplugdj.model.FireworkLauncher;
+import com.goatgoose.bustaplugdj.model.PlugDJPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;

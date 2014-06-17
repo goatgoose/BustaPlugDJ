@@ -1,4 +1,4 @@
-package com.goatgoose.bustaplugdj.Tasks;
+package com.goatgoose.bustaplugdj.tasks;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
