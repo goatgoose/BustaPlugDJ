@@ -1,10 +1,9 @@
 package com.goatgoose.bustaplugdj;
 
 import com.goatgoose.bustaplugdj.eventHandlers.PlayerListener;
-import com.goatgoose.bustaplugdj.model.PlugDJPlayer;
-import com.goatgoose.bustaplugdj.model.PlugDJServerEndpoint;
+import com.goatgoose.bustaplugdj.plugdj.PlugDJPlayer;
+import com.goatgoose.bustaplugdj.plugdj.PlugDJSocketHandler;
 import com.goatgoose.bustaplugdj.model.Stage;
-import com.goatgoose.bustaplugdj.tasks.StartSocketServerTask;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.Bukkit;
@@ -14,7 +13,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.glassfish.tyrus.server.Server;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 import java.util.HashMap;
 
@@ -56,15 +57,20 @@ public class BustaPlugDJ extends JavaPlugin {
             addPlugDJPlayer(new PlugDJPlayer(player));
         }
 
-        Server webSocketServer = new Server("localhost", 8025, "/websockets", PlugDJServerEndpoint.class);
+        Server socketServer = new Server(8025);
+        WebSocketHandler webSocketHandler = new WebSocketHandler() {
+            @Override
+            public void configure(WebSocketServletFactory webSocketServletFactory) {
+                webSocketServletFactory.register(PlugDJSocketHandler.class);
+            }
+        };
+        socketServer.setHandler(webSocketHandler);
         try {
-            webSocketServer.start();
+            socketServer.start();
         } catch(Exception e) {
-            Bukkit.broadcastMessage("Unable to launch socket server:");
+            getLogger().warning("Unable to start socket server");
             e.printStackTrace();
         }
-
-        //new StartSocketServerTask(webSocketServer).runTaskAsynchronously(this);
     }
 
     @Override
