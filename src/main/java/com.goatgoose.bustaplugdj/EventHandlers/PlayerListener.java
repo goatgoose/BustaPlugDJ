@@ -2,7 +2,7 @@ package com.goatgoose.bustaplugdj.eventHandlers;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
 import com.goatgoose.bustaplugdj.model.FireworkLauncher;
-import com.goatgoose.bustaplugdj.plugdj.PlugDJPlayer;
+import com.goatgoose.bustaplugdj.model.BustaPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -21,19 +21,19 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        plugin.addPlugDJPlayer(new PlugDJPlayer(event.getPlayer()));
+        plugin.addPlugDJPlayer(new BustaPlayer(event.getPlayer()));
     }
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
-        plugin.removePlugDJPlayer(new PlugDJPlayer(event.getPlayer()));
+        plugin.removePlugDJPlayer(new BustaPlayer(event.getPlayer()));
     }
 
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
-        PlugDJPlayer plugDJPlayer = plugin.getPlugDJPlayer(event.getPlayer());
+        BustaPlayer bustaPlayer = plugin.getPlugDJPlayer(event.getPlayer());
 
-        if(plugDJPlayer.getStatus() == PlugDJPlayer.Status.DJ) {
+        if(bustaPlayer.getStatus() == BustaPlayer.Status.DJ) {
 
             if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 if(event.getPlayer().getInventory().getHeldItemSlot() == 0) {
@@ -46,14 +46,14 @@ public class PlayerListener implements Listener {
                 }
             }
 
-        } else if(plugDJPlayer.getStatus() == PlugDJPlayer.Status.AUDIENCE) {
+        } else if(bustaPlayer.getStatus() == BustaPlayer.Status.AUDIENCE) {
             event.setCancelled(true);
-        } else if(plugDJPlayer.getStatus() == PlugDJPlayer.Status.SETUP_FIREWORKS) {
+        } else if(bustaPlayer.getStatus() == BustaPlayer.Status.SETUP_FIREWORKS) {
 
             if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 event.setCancelled(true);
                 plugin.getStage().addFireworkLauncher(new FireworkLauncher(plugin, event.getClickedBlock()));
-                plugDJPlayer.getPlayer().sendMessage("Block added to firework launchers");
+                bustaPlayer.getPlayer().sendMessage("Block added to firework launchers");
             }
 
         }

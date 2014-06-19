@@ -1,8 +1,9 @@
 package com.goatgoose.bustaplugdj;
 
 import com.goatgoose.bustaplugdj.eventHandlers.PlayerListener;
-import com.goatgoose.bustaplugdj.plugdj.PlugDJPlayer;
-import com.goatgoose.bustaplugdj.plugdj.PlugDJSocketHandler;
+import com.goatgoose.bustaplugdj.model.BustaPlayer;
+import com.goatgoose.bustaplugdj.plugdj.EventListener;
+import com.goatgoose.bustaplugdj.plugdj.SocketHandler;
 import com.goatgoose.bustaplugdj.model.Stage;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -27,7 +28,7 @@ public class BustaPlugDJ extends JavaPlugin {
     // - Separate display into 3 sections, and light up each part depending on f coord
     // - Firework groups with multiple icons to emit each of them separately
     // - Firework colors with a popup menu to select them
-    // - Full plug.dj API implementation in minecraft
+    // - Full plug.dj EventListener implementation in minecraft
     // - Minecraft username verification in plug.dj
     // - Teleport on dj change (dj to stage, audience to dance floor)
     // - Minecraft scoreboard of plug.dj room/dj info and countdown to you djing
@@ -42,7 +43,7 @@ public class BustaPlugDJ extends JavaPlugin {
     // - Better dance floor with lights
     // - More options for display than just flashDisplay()
 
-    private HashMap<String, PlugDJPlayer> plugDJPlayers = new HashMap<String, PlugDJPlayer>();
+    private HashMap<String, BustaPlayer> plugDJPlayers = new HashMap<String, BustaPlayer>();
 
     private PlayerListener playerListener;
 
@@ -51,17 +52,18 @@ public class BustaPlugDJ extends JavaPlugin {
     @Override
     public void onEnable() {
         playerListener = new PlayerListener(this);
+        eventListener = new EventListener(this);
         stage = new Stage(this);
 
         for(Player player : Bukkit.getOnlinePlayers()) {
-            addPlugDJPlayer(new PlugDJPlayer(player));
+            addPlugDJPlayer(new BustaPlayer(player));
         }
 
         Server socketServer = new Server(8025);
         WebSocketHandler webSocketHandler = new WebSocketHandler() {
             @Override
             public void configure(WebSocketServletFactory webSocketServletFactory) {
-                webSocketServletFactory.register(PlugDJSocketHandler.class);
+                webSocketServletFactory.register(SocketHandler.class);
             }
         };
         socketServer.setHandler(webSocketHandler);
@@ -85,7 +87,7 @@ public class BustaPlugDJ extends JavaPlugin {
             return false;
         }
 
-        PlugDJPlayer plugDJPlayer = getPlugDJPlayer((Player) sender);
+        BustaPlayer bustaPlayer = getPlugDJPlayer((Player) sender);
 
         // /plugdj
         if(command.getName().equalsIgnoreCase("plugdj")) {
@@ -102,7 +104,7 @@ public class BustaPlugDJ extends JavaPlugin {
                     if(getWorldEdit() == null) {
                         return false;
                     }
-                    Selection selection = getWorldEdit().getSelection(plugDJPlayer.getPlayer());
+                    Selection selection = getWorldEdit().getSelection(bustaPlayer.getPlayer());
                     if(selection == null) {
                         Bukkit.broadcastMessage("No selection found");
                         return false;
@@ -115,7 +117,7 @@ public class BustaPlugDJ extends JavaPlugin {
                                 }
                             }
                         }
-                        plugDJPlayer.getPlayer().sendMessage("display registered");
+                        bustaPlayer.getPlayer().sendMessage("display registered");
                         return true;
                     }
                 }
@@ -126,12 +128,12 @@ public class BustaPlugDJ extends JavaPlugin {
                 if(args.length != 1) {
                     return false;
                 } else {
-                    if(plugDJPlayer.getStatus() == PlugDJPlayer.Status.SETUP_FIREWORKS) {
-                        plugDJPlayer.setStatus(PlugDJPlayer.Status.ABSENT);
-                        plugDJPlayer.getPlayer().sendMessage("Disabled SETUP_FIREWORKS");
+                    if(bustaPlayer.getStatus() == BustaPlayer.Status.SETUP_FIREWORKS) {
+                        bustaPlayer.setStatus(BustaPlayer.Status.ABSENT);
+                        bustaPlayer.getPlayer().sendMessage("Disabled SETUP_FIREWORKS");
                     } else {
-                        plugDJPlayer.setStatus(PlugDJPlayer.Status.SETUP_FIREWORKS);
-                        plugDJPlayer.getPlayer().sendMessage("Enabled SETUP_FIREWORKS, click firework launchers to add them");
+                        bustaPlayer.setStatus(BustaPlayer.Status.SETUP_FIREWORKS);
+                        bustaPlayer.getPlayer().sendMessage("Enabled SETUP_FIREWORKS, click firework launchers to add them");
                     }
                     return true;
                 }
@@ -142,7 +144,7 @@ public class BustaPlugDJ extends JavaPlugin {
                 if(args.length != 1) {
                     return false;
                 } else {
-                    plugDJPlayer.setStatus(PlugDJPlayer.Status.DJ);
+                    bustaPlayer.setStatus(BustaPlayer.Status.DJ);
                     return true;
                 }
             }
@@ -152,7 +154,7 @@ public class BustaPlugDJ extends JavaPlugin {
                 if(args.length != 1) {
                     return false;
                 } else {
-                    plugDJPlayer.setStatus(PlugDJPlayer.Status.AUDIENCE);
+                    bustaPlayer.setStatus(BustaPlayer.Status.AUDIENCE);
                     return true;
                 }
             }
@@ -162,16 +164,20 @@ public class BustaPlugDJ extends JavaPlugin {
         return true;
     }
 
-    public void addPlugDJPlayer(PlugDJPlayer plugDJPlayer) {
-        plugDJPlayers.put(plugDJPlayer.getPlayer().getName(), plugDJPlayer);
+    public void addPlugDJPlayer(BustaPlayer bustaPlayer) {
+        plugDJPlayers.put(bustaPlayer.getPlayer().getName(), bustaPlayer);
     }
 
-    public void removePlugDJPlayer(PlugDJPlayer plugDJPlayer) {
-        plugDJPlayers.remove(plugDJPlayer.getPlayer().getName());
+    public void removePlugDJPlayer(BustaPlayer bustaPlayer) {
+        plugDJPlayers.remove(bustaPlayer.getPlayer().getName());
     }
 
-    public PlugDJPlayer getPlugDJPlayer(Player player) {
+    public BustaPlayer getPlugDJPlayer(Player player) {
         return plugDJPlayers.get(player.getName());
+    }
+
+    public EventListener getEventListener() {
+        return eventListener;
     }
 
     public Stage getStage() {
