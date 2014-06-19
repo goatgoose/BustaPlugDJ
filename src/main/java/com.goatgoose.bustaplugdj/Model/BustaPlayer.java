@@ -15,8 +15,11 @@ public class BustaPlayer {
 
     private Player player;
 
+    private String plugDJUsername;
+
     public BustaPlayer(Player player) {
         this.player = player;
+        this.plugDJUsername = player.getName();
     }
 
     public Player getPlayer() {
@@ -29,6 +32,14 @@ public class BustaPlayer {
 
     public Status getStatus() {
         return status;
+    }
+
+    public void setPlugDJUsername(String plugDJUsername) {
+        this.plugDJUsername = plugDJUsername;
+    }
+
+    public String getPlugDJUsername() {
+        return plugDJUsername;
     }
 
 }

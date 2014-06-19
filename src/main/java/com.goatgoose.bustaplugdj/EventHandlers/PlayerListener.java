@@ -1,6 +1,7 @@
 package com.goatgoose.bustaplugdj.eventHandlers;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
+import com.goatgoose.bustaplugdj.model.BustaPlugDJMananger;
 import com.goatgoose.bustaplugdj.model.FireworkLauncher;
 import com.goatgoose.bustaplugdj.model.BustaPlayer;
 import org.bukkit.event.EventHandler;
@@ -14,6 +15,8 @@ public class PlayerListener implements Listener {
 
     private BustaPlugDJ plugin;
 
+    private BustaPlugDJMananger manager = BustaPlugDJMananger.getInstance();
+
     public PlayerListener(BustaPlugDJ instance) {
         this.plugin = instance;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -21,28 +24,28 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        plugin.addPlugDJPlayer(new BustaPlayer(event.getPlayer()));
+        manager.addPlugDJPlayer(new BustaPlayer(event.getPlayer()));
     }
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
-        plugin.removePlugDJPlayer(new BustaPlayer(event.getPlayer()));
+        manager.removePlugDJPlayer(new BustaPlayer(event.getPlayer()));
     }
 
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
-        BustaPlayer bustaPlayer = plugin.getPlugDJPlayer(event.getPlayer());
+        BustaPlayer bustaPlayer = manager.getPlugDJPlayer(event.getPlayer());
 
         if(bustaPlayer.getStatus() == BustaPlayer.Status.DJ) {
 
             if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 if(event.getPlayer().getInventory().getHeldItemSlot() == 0) {
                     event.setCancelled(true);
-                    plugin.getStage().flashDisplay();
+                    manager.getStage().flashDisplay();
                 } else if(event.getPlayer().getInventory().getHeldItemSlot() == 1) {
                     event.setCancelled(true);
-                    plugin.getStage().flashDisplay();
-                    plugin.getStage().launchFireworks();
+                    manager.getStage().flashDisplay();
+                    manager.getStage().launchFireworks();
                 }
             }
 
@@ -52,7 +55,7 @@ public class PlayerListener implements Listener {
 
             if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 event.setCancelled(true);
-                plugin.getStage().addFireworkLauncher(new FireworkLauncher(plugin, event.getClickedBlock()));
+                manager.getStage().addFireworkLauncher(new FireworkLauncher(plugin, event.getClickedBlock()));
                 bustaPlayer.getPlayer().sendMessage("Block added to firework launchers");
             }
 

@@ -1,7 +1,8 @@
 package com.goatgoose.bustaplugdj.plugdj;
 
-import com.goatgoose.bustaplugdj.BustaPlugDJ;
 import com.goatgoose.bustaplugdj.model.BustaPlugDJMananger;
+import com.goatgoose.bustaplugdj.plugdj.events.*;
+import org.bukkit.Bukkit;
 
 public class EventListener {
 
@@ -11,25 +12,71 @@ public class EventListener {
         this.manager = manager;
     }
 
-    //public void onChat(PlugDJChat chat) {}
-
-    public void onUserSkip(User user) {
+    public void onChat(UserChatEvent event) {
 
     }
 
-    public void onUserJoin(User user) {
+    public void onUserSkip(UserSkipEvent event) {
 
     }
 
-    public void onUserLeave(User user) {
+    public void onUserJoin(UserJoinEvent event) {
 
     }
 
-    public void onUserFan(User user) {
+    public void onUserLeave(UserLeaveEvent event) {
 
     }
 
-    public void onFriendJoin(User user) {
+    public void onUserFan(UserFanEvent event) {
+
+    }
+
+    public void onFriendJoin(FriendJoinEvent event) {
+
+    }
+
+    public void onFanJoin(FanJoinEvent event) {
+
+    }
+
+    public void onVoteUpdate(VoteUpdateEvent event) {
+
+    }
+
+    public void onCurateUpdate(CurateUpdateEvent event) {
+
+    }
+
+    public void onRoomScoreUpdate(RoomScoreUpdateEvent event) {
+
+    }
+
+    public void onDJAdvance(DJAdvanceEvent event) {
+
+    }
+
+    public void onDJUpdate(DJUpdateEvent event) {
+        Bukkit.getLogger().info(event.getUser().getUsername());
+    }
+
+    public void onWaitListUpdate(WaitListUpdateEvent event) {
+
+    }
+
+    public void onVoteSkip(VoteSkipEvent event) {
+
+    }
+
+    public void onModSkip(ModSkipEvent event) {
+
+    }
+
+    public void onChatCommand(ChatCommandEvent event) {
+
+    }
+
+    public void onHistoryUpdate(HistoryUpdateEvent event) {
 
     }
 }

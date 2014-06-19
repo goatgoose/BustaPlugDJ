@@ -1,9 +1,9 @@
 package com.goatgoose.bustaplugdj.plugdj.events;
 
+import com.goatgoose.bustaplugdj.plugdj.model.MessageContainer;
+import com.goatgoose.bustaplugdj.plugdj.model.User;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-
-import java.util.HashMap;
 
 public class EventHandler {
 
@@ -27,13 +27,16 @@ public class EventHandler {
         HISTORY_UPDATE
     }
 
-    public EventHandler(LinkedTreeMap linkedTreeMap) {
+    public EventHandler(LinkedTreeMap linkedTreeMap, String message) {
         Gson gson = new Gson();
         EventType eventType = EventType.valueOf((String) linkedTreeMap.get("eventType"));
         if(eventType != null) {
 
-            if(eventType == EventType.CHAT) {
+            // TODO
+            // check for every event
 
+            if(eventType == EventType.DJ_UPDATE) {
+                new DJUpdateEvent(gson.fromJson(message, User.class));
             }
 
         }

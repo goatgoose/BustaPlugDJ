@@ -2,11 +2,13 @@ package com.goatgoose.bustaplugdj;
 
 import com.goatgoose.bustaplugdj.eventHandlers.PlayerListener;
 import com.goatgoose.bustaplugdj.model.BustaPlayer;
+import com.goatgoose.bustaplugdj.model.BustaPlugDJMananger;
 import com.goatgoose.bustaplugdj.plugdj.EventListener;
 import com.goatgoose.bustaplugdj.plugdj.SocketHandler;
 import com.goatgoose.bustaplugdj.model.Stage;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
+import com.sun.corba.se.spi.activation._ServerManagerImplBase;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -43,20 +45,19 @@ public class BustaPlugDJ extends JavaPlugin {
     // - Better dance floor with lights
     // - More options for display than just flashDisplay()
 
-    private HashMap<String, BustaPlayer> plugDJPlayers = new HashMap<String, BustaPlayer>();
-
     private PlayerListener playerListener;
 
-    private Stage stage;
+    private static BustaPlugDJMananger manager;
 
     @Override
     public void onEnable() {
+        new BustaPlugDJMananger(this);
+        manager = BustaPlugDJMananger.getInstance();
+
         playerListener = new PlayerListener(this);
-        eventListener = new EventListener(this);
-        stage = new Stage(this);
 
         for(Player player : Bukkit.getOnlinePlayers()) {
-            addPlugDJPlayer(new BustaPlayer(player));
+            manager.addPlugDJPlayer(new BustaPlayer(player));
         }
 
         Server socketServer = new Server(8025);
@@ -87,7 +88,7 @@ public class BustaPlugDJ extends JavaPlugin {
             return false;
         }
 
-        BustaPlayer bustaPlayer = getPlugDJPlayer((Player) sender);
+        BustaPlayer bustaPlayer = manager.getPlugDJPlayer((Player) sender);
 
         // /plugdj
         if(command.getName().equalsIgnoreCase("plugdj")) {
@@ -113,7 +114,7 @@ public class BustaPlugDJ extends JavaPlugin {
                             for(int y = selection.getMinimumPoint().getBlockY(); y <= selection.getMaximumPoint().getBlockY(); y = y + 1) {
                                 for(int z = selection.getMinimumPoint().getBlockZ(); z <= selection.getMaximumPoint().getBlockZ(); z = z + 1) {
                                     Block block = selection.getWorld().getBlockAt(x, y, z);
-                                    stage.addDisplayBlock(block);
+                                    manager.getStage().addDisplayBlock(block);
                                 }
                             }
                         }
@@ -159,29 +160,18 @@ public class BustaPlugDJ extends JavaPlugin {
                 }
             }
 
+            // /plugdj setName [name]
+            else if(args[0].equalsIgnoreCase("setName")) {
+                if(args.length != 2) {
+                    return false;
+                } else {
+                    bustaPlayer.setPlugDJUsername(args[1]);
+                }
+            }
+
         }
 
         return true;
-    }
-
-    public void addPlugDJPlayer(BustaPlayer bustaPlayer) {
-        plugDJPlayers.put(bustaPlayer.getPlayer().getName(), bustaPlayer);
-    }
-
-    public void removePlugDJPlayer(BustaPlayer bustaPlayer) {
-        plugDJPlayers.remove(bustaPlayer.getPlayer().getName());
-    }
-
-    public BustaPlayer getPlugDJPlayer(Player player) {
-        return plugDJPlayers.get(player.getName());
-    }
-
-    public EventListener getEventListener() {
-        return eventListener;
-    }
-
-    public Stage getStage() {
-        return stage;
     }
 
     public WorldEditPlugin getWorldEdit() {

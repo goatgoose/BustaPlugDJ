@@ -15,12 +15,10 @@ public class SocketHandler {
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
-        Bukkit.getLogger().info(prefix + "Client connected: " + session.getRemoteAddress().getAddress());
     }
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        Bukkit.getLogger().info(prefix + "Client disconnected: statusCode = " + statusCode + ", reason = " + reason);
     }
 
     @OnWebSocketError
@@ -34,7 +32,7 @@ public class SocketHandler {
         Object messageJson = gson.fromJson(message, Object.class);
         LinkedTreeMap messageTreeMap = (LinkedTreeMap) messageJson;
         if(messageTreeMap.containsKey("eventType")) {
-            new EventHandler(messageTreeMap);
+            new EventHandler(messageTreeMap, message);
         }
     }
 
