@@ -2,6 +2,7 @@ package com.goatgoose.bustaplugdj.model;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
 import com.goatgoose.bustaplugdj.plugdj.EventListener;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -18,6 +19,10 @@ public class BustaPlugDJMananger {
 
     private Stage stage;
 
+    private Location djSpawn;
+
+    private Location audienceSpawn;
+
     public BustaPlugDJMananger(BustaPlugDJ plugin) {
         if(INSTANCE == null) {
             INSTANCE = this;
@@ -27,20 +32,40 @@ public class BustaPlugDJMananger {
         }
     }
 
+    public BustaPlayer getCurrentDJ() {
+        for(String key : bustaPlayers.keySet()) {
+            BustaPlayer bustaPlayer = bustaPlayers.get(key);
+            if(bustaPlayer.getStatus() == BustaPlayer.Status.DJ) {
+                return bustaPlayer;
+            }
+        }
+        return null;
+    }
+
     public static BustaPlugDJMananger getInstance() {
         return INSTANCE;
     }
 
-    public void addPlugDJPlayer(BustaPlayer bustaPlayer) {
+    public void addBustaPlayer(BustaPlayer bustaPlayer) {
         bustaPlayers.put(bustaPlayer.getPlayer().getName(), bustaPlayer);
     }
 
-    public void removePlugDJPlayer(BustaPlayer bustaPlayer) {
+    public void removeBustaPlayer(BustaPlayer bustaPlayer) {
         bustaPlayers.remove(bustaPlayer.getPlayer().getName());
     }
 
-    public BustaPlayer getPlugDJPlayer(Player player) {
+    public BustaPlayer getBustaPlayer(Player player) {
         return bustaPlayers.get(player.getName());
+    }
+
+    public BustaPlayer getBustaPlayer(String plugDJUsername) {
+        for(String key : bustaPlayers.keySet()) {
+            BustaPlayer bustaPlayer = bustaPlayers.get(key);
+            if(bustaPlayer.getPlugDJUsername().equalsIgnoreCase(plugDJUsername)) {
+                return bustaPlayer;
+            }
+        }
+        return null;
     }
 
     public Stage getStage() {
@@ -53,6 +78,22 @@ public class BustaPlugDJMananger {
 
     public EventListener getEventListener() {
         return eventListener;
+    }
+
+    public Location getDjSpawn() {
+        return djSpawn;
+    }
+
+    public void setDjSpawn(Location djSpawn) {
+        this.djSpawn = djSpawn;
+    }
+
+    public Location getAudienceSpawn() {
+        return audienceSpawn;
+    }
+
+    public void setAudienceSpawn(Location audienceSpawn) {
+        this.audienceSpawn = audienceSpawn;
     }
 
 }

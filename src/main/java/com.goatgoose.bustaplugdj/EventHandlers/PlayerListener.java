@@ -24,17 +24,17 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        manager.addPlugDJPlayer(new BustaPlayer(event.getPlayer()));
+        manager.addBustaPlayer(new BustaPlayer(event.getPlayer()));
     }
 
     @EventHandler
     public void onLogout(PlayerQuitEvent event) {
-        manager.removePlugDJPlayer(new BustaPlayer(event.getPlayer()));
+        manager.removeBustaPlayer(new BustaPlayer(event.getPlayer()));
     }
 
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
-        BustaPlayer bustaPlayer = manager.getPlugDJPlayer(event.getPlayer());
+        BustaPlayer bustaPlayer = manager.getBustaPlayer(event.getPlayer());
 
         if(bustaPlayer.getStatus() == BustaPlayer.Status.DJ) {
 

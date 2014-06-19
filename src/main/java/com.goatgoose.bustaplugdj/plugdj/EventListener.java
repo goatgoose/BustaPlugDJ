@@ -1,5 +1,6 @@
 package com.goatgoose.bustaplugdj.plugdj;
 
+import com.goatgoose.bustaplugdj.model.BustaPlayer;
 import com.goatgoose.bustaplugdj.model.BustaPlugDJMananger;
 import com.goatgoose.bustaplugdj.plugdj.events.*;
 import org.bukkit.Bukkit;
@@ -57,7 +58,13 @@ public class EventListener {
     }
 
     public void onDJUpdate(DJUpdateEvent event) {
-        Bukkit.getLogger().info(event.getUser().getUsername());
+        manager.getCurrentDJ().setStatus(BustaPlayer.Status.AUDIENCE);
+        if(!manager.getCurrentDJ().getPlugDJUsername().equalsIgnoreCase(event.getUser().getUsername())) {
+            BustaPlayer newDJ = manager.getBustaPlayer(event.getUser().getUsername());
+            if(newDJ != null) {
+                newDJ.setStatus(BustaPlayer.Status.DJ);
+            }
+        }
     }
 
     public void onWaitListUpdate(WaitListUpdateEvent event) {

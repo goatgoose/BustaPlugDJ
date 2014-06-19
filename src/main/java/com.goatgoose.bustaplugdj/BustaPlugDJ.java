@@ -3,12 +3,9 @@ package com.goatgoose.bustaplugdj;
 import com.goatgoose.bustaplugdj.eventHandlers.PlayerListener;
 import com.goatgoose.bustaplugdj.model.BustaPlayer;
 import com.goatgoose.bustaplugdj.model.BustaPlugDJMananger;
-import com.goatgoose.bustaplugdj.plugdj.EventListener;
 import com.goatgoose.bustaplugdj.plugdj.SocketHandler;
-import com.goatgoose.bustaplugdj.model.Stage;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
-import com.sun.corba.se.spi.activation._ServerManagerImplBase;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -19,8 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
-
-import java.util.HashMap;
 
 public class BustaPlugDJ extends JavaPlugin {
 
@@ -57,7 +52,7 @@ public class BustaPlugDJ extends JavaPlugin {
         playerListener = new PlayerListener(this);
 
         for(Player player : Bukkit.getOnlinePlayers()) {
-            manager.addPlugDJPlayer(new BustaPlayer(player));
+            manager.addBustaPlayer(new BustaPlayer(player));
         }
 
         Server socketServer = new Server(8025);
@@ -88,7 +83,7 @@ public class BustaPlugDJ extends JavaPlugin {
             return false;
         }
 
-        BustaPlayer bustaPlayer = manager.getPlugDJPlayer((Player) sender);
+        BustaPlayer bustaPlayer = manager.getBustaPlayer((Player) sender);
 
         // /plugdj
         if(command.getName().equalsIgnoreCase("plugdj")) {
@@ -137,6 +132,24 @@ public class BustaPlugDJ extends JavaPlugin {
                         bustaPlayer.getPlayer().sendMessage("Enabled SETUP_FIREWORKS, click firework launchers to add them");
                     }
                     return true;
+                }
+            }
+
+            // /plugdj setDJSpawn
+            else if(args[0].equalsIgnoreCase("setDJSpawn")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    manager.setDjSpawn(bustaPlayer.getPlayer().getLocation());
+                }
+            }
+
+            // /plugdj setAudienceSpawn
+            else if(args[0].equalsIgnoreCase("setAudienceSpawn")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    manager.setAudienceSpawn(bustaPlayer.getPlayer().getLocation());
                 }
             }
 

@@ -1,8 +1,11 @@
 package com.goatgoose.bustaplugdj.model;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class BustaPlayer {
+
+    BustaPlugDJMananger manager = BustaPlugDJMananger.getInstance();
 
     public enum Status {
         DJ,
@@ -27,6 +30,25 @@ public class BustaPlayer {
     }
 
     public void setStatus(Status status) {
+
+        if(status == Status.DJ) {
+            BustaPlayer currentDJ = manager.getCurrentDJ();
+            if(currentDJ != null) {
+                currentDJ.setStatus(Status.AUDIENCE);
+            }
+            Location djSpawn = manager.getDjSpawn();
+            if(djSpawn != null) {
+                player.teleport(djSpawn);
+            }
+        }
+
+        if(status == Status.AUDIENCE) {
+            Location audienceSpawn = manager.getAudienceSpawn();
+            if(audienceSpawn != null) {
+                player.teleport(audienceSpawn);
+            }
+        }
+
         this.status = status;
     }
 
