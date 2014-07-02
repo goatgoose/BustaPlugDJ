@@ -1,9 +1,12 @@
 package com.goatgoose.bustaplugdj.model;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
+import com.goatgoose.bustaplugdj.tasks.LaunchFireTask;
+import com.goatgoose.bustaplugdj.tasks.LaunchFireworkTask;
 import com.goatgoose.bustaplugdj.tasks.TurnOffRedstoneBlocksTask;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 
@@ -14,6 +17,10 @@ public class Stage {
     private ArrayList<Block> displayBlocks = new ArrayList<Block>();
 
     private ArrayList<FireworkLauncher> fireworkLaunchers = new ArrayList<FireworkLauncher>();
+
+    private ArrayList<FireLauncher> fireLaunchers = new ArrayList<FireLauncher>();
+
+    private BukkitTask launchFireTask = null;
 
     public Stage(BustaPlugDJ instance) {
         this.plugin = instance;
@@ -32,6 +39,15 @@ public class Stage {
         }
     }
 
+    public void toggleFire() {
+        if(launchFireTask == null) {
+            launchFireTask = new LaunchFireTask(fireLaunchers).runTaskTimer(plugin, 0, 4);
+        } else {
+            launchFireTask.cancel();
+            launchFireTask = null;
+        }
+    }
+
     public void addDisplayBlock(Block block) {
         displayBlocks.add(block);
     }
@@ -39,6 +55,12 @@ public class Stage {
     public void addFireworkLauncher(FireworkLauncher fireworkLauncher) {
         if(!(fireworkLaunchers.contains(fireworkLauncher))) {
             fireworkLaunchers.add(fireworkLauncher);
+        }
+    }
+
+    public void addFireLauncher(FireLauncher fireLauncher) {
+        if(!(fireLaunchers.contains(fireLauncher))) {
+            fireLaunchers.add(fireLauncher);
         }
     }
 }

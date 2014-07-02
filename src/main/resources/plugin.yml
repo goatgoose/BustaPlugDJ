@@ -13,3 +13,6 @@ permissions:
   plugdj.everything:
     description: access to every command
     default: true
+  plugdj.debug:
+    description: allows access to debugging commands
+    default: op

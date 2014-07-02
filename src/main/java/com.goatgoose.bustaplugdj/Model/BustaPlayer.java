@@ -1,5 +1,6 @@
 package com.goatgoose.bustaplugdj.model;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -11,6 +12,7 @@ public class BustaPlayer {
         DJ,
         AUDIENCE,
         SETUP_FIREWORKS,
+        SETUP_FIRE,
         ABSENT
     }
 
@@ -32,6 +34,7 @@ public class BustaPlayer {
     public void setStatus(Status status) {
 
         if(status == Status.DJ) {
+            player.sendMessage(manager.prefix + "You are now DJ!");
             BustaPlayer currentDJ = manager.getCurrentDJ();
             if(currentDJ != null) {
                 currentDJ.setStatus(Status.AUDIENCE);

@@ -2,6 +2,8 @@ package com.goatgoose.bustaplugdj.model;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
 import com.goatgoose.bustaplugdj.plugdj.EventListener;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -22,6 +24,8 @@ public class BustaPlugDJMananger {
     private Location djSpawn;
 
     private Location audienceSpawn;
+
+    public final String prefix = ChatColor.GRAY + "[" + ChatColor.BLUE + "BustaPlugDJ" + ChatColor.GRAY + "] " + ChatColor.LIGHT_PURPLE;
 
     public BustaPlugDJMananger(BustaPlugDJ plugin) {
         if(INSTANCE == null) {
@@ -55,7 +59,13 @@ public class BustaPlugDJMananger {
     }
 
     public BustaPlayer getBustaPlayer(Player player) {
-        return bustaPlayers.get(player.getName());
+        if(bustaPlayers.get(player.getName()) == null) {
+            BustaPlayer bustaPlayer = new BustaPlayer(player);
+            addBustaPlayer(bustaPlayer);
+            return bustaPlayer;
+        } else {
+            return bustaPlayers.get(player.getName());
+        }
     }
 
     public BustaPlayer getBustaPlayer(String plugDJUsername) {

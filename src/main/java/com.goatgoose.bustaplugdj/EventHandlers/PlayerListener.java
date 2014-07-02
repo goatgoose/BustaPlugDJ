@@ -2,6 +2,7 @@ package com.goatgoose.bustaplugdj.eventHandlers;
 
 import com.goatgoose.bustaplugdj.BustaPlugDJ;
 import com.goatgoose.bustaplugdj.model.BustaPlugDJMananger;
+import com.goatgoose.bustaplugdj.model.FireLauncher;
 import com.goatgoose.bustaplugdj.model.FireworkLauncher;
 import com.goatgoose.bustaplugdj.model.BustaPlayer;
 import org.bukkit.event.EventHandler;
@@ -46,6 +47,8 @@ public class PlayerListener implements Listener {
                     event.setCancelled(true);
                     manager.getStage().flashDisplay();
                     manager.getStage().launchFireworks();
+                } else if(event.getPlayer().getInventory().getHeldItemSlot() == 2) {
+                    manager.getStage().toggleFire();
                 }
             }
 
@@ -55,10 +58,17 @@ public class PlayerListener implements Listener {
 
             if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 event.setCancelled(true);
-                manager.getStage().addFireworkLauncher(new FireworkLauncher(plugin, event.getClickedBlock()));
+                manager.getStage().addFireworkLauncher(new FireworkLauncher(event.getClickedBlock()));
                 bustaPlayer.getPlayer().sendMessage("Block added to firework launchers");
             }
 
+        } else if(bustaPlayer.getStatus() == BustaPlayer.Status.SETUP_FIRE) {
+
+            if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                event.setCancelled(true);
+                manager.getStage().addFireLauncher(new FireLauncher(event.getClickedBlock()));
+                bustaPlayer.getPlayer().sendMessage("Block added to fire launchers");
+            }
         }
     }
 

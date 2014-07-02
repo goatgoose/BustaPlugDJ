@@ -11,18 +11,15 @@ import java.lang.reflect.Field;
 
 public class FireworkLauncher {
 
-    private BustaPlugDJ plugin;
-
     private Block block;
 
-    public FireworkLauncher(BustaPlugDJ instance, Block block) {
-        this.plugin = instance;
+    public FireworkLauncher(Block block) {
         this.block = block;
     }
 
     public void launchFirework() {
         Firework firework = block.getWorld().spawn(block.getLocation(), Firework.class);
-        FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(false).withColor(Color.RED).with(FireworkEffect.Type.BURST).build();
+        FireworkEffect effect = FireworkEffect.builder().trail(true).flicker(false).withColor(Color.RED).with(FireworkEffect.Type.BALL).build();
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
         fireworkMeta.clearEffects();
         fireworkMeta.addEffect(effect);

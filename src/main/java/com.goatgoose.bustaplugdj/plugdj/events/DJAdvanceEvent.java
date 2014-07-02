@@ -11,9 +11,12 @@ public class DJAdvanceEvent implements Event {
 
     private Media media;
 
-    public DJAdvanceEvent(ArrayList<User> users, Media media) {
+    private User dj;
+
+    public DJAdvanceEvent(ArrayList<User> users, Media media, User dj) {
         this.users = users;
         this.media = media;
+        this.dj = dj;
         manager.getEventListener().onDJAdvance(this);
     }
 
@@ -23,6 +26,10 @@ public class DJAdvanceEvent implements Event {
 
     public Media getMedia() {
         return media;
+    }
+
+    public User getDj() {
+        return dj;
     }
 
 }

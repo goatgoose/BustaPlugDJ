@@ -20,29 +20,35 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 public class BustaPlugDJ extends JavaPlugin {
 
     // TODO
-    // - Add icons to each action (ie firework for launchFireworks, torch for lights)
-    // - Add fire action that constantly emits red fireworks until turned off
+    // - Add blocks to each action in toolbar (ie firework for launchFireworks, torch for lights)
     // - Separate display into 3 sections, and light up each part depending on f coord
     // - Firework groups with multiple icons to emit each of them separately
     // - Firework colors with a popup menu to select them
-    // - Full plug.dj EventListener implementation in minecraft
-    // - Minecraft username verification in plug.dj
-    // - Teleport on dj change (dj to stage, audience to dance floor)
+    // - Full plug.dj api implementation in java
+    // - Minecraft ip username verification in plug.dj
     // - Minecraft scoreboard of plug.dj room/dj info and countdown to you djing
     // - Plug.dj and minecraft chat sync (only in stage)
     // - Fake npc audience and djs for plug.dj users who aren't in minecraft (dancing in minecraft based on wooting)
     // - BustaPlugDJClient.js running on every mc client to control plug.dj individually (ie volume control, wooting and mehing, song select) and new TCP server to handle them
-    //   - Auto woot/meh based on how much you're dancing in minecraft xD
+    //   - Auto woot/meh based on how much you're dancing in minecraft
     //   - DJ would have control over everyone's volume, so add options to fade in/out and boost for drops
     // - Competition mode that allows users to take turns competing for votes
     // - Commandless user interface for joining/djing/leaving stage
-    // - Save setup to file and parse in onEnable()
     // - Better dance floor with lights
-    // - More options for display than just flashDisplay()
+    // - More options for display than just flashing
+    // - Multiple stages and stage naming
+    // - Stage save to json file on exit, and reload on startup automatically
+    // - /plugdj dj forces 2+ djs at the same time
+    // - Auto deploy ec2 instance with web socket client and shut it off when it's not being used
+    //   - Make an AMI with startup script to launch plug.dj with client
+    //   - Configure aws ec2 dependency in java
+    // - Dancefloor sparkles
 
     private PlayerListener playerListener;
 
     private static BustaPlugDJMananger manager;
+
+    private Server socketServer;
 
     @Override
     public void onEnable() {
@@ -51,11 +57,7 @@ public class BustaPlugDJ extends JavaPlugin {
 
         playerListener = new PlayerListener(this);
 
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            manager.addBustaPlayer(new BustaPlayer(player));
-        }
-
-        Server socketServer = new Server(8025);
+        socketServer = new Server(8025);
         WebSocketHandler webSocketHandler = new WebSocketHandler() {
             @Override
             public void configure(WebSocketServletFactory webSocketServletFactory) {
@@ -73,7 +75,12 @@ public class BustaPlugDJ extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        try {
+            socketServer.stop();
+        } catch(Exception e) {
+            getLogger().warning("Unable to start socket server");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -102,7 +109,7 @@ public class BustaPlugDJ extends JavaPlugin {
                     }
                     Selection selection = getWorldEdit().getSelection(bustaPlayer.getPlayer());
                     if(selection == null) {
-                        Bukkit.broadcastMessage("No selection found");
+                        bustaPlayer.getPlayer().sendMessage(manager.prefix + "No selection found");
                         return false;
                     } else {
                         for(int x = selection.getMinimumPoint().getBlockX(); x <= selection.getMaximumPoint().getBlockX(); x = x + 1) {
@@ -113,7 +120,7 @@ public class BustaPlugDJ extends JavaPlugin {
                                 }
                             }
                         }
-                        bustaPlayer.getPlayer().sendMessage("display registered");
+                        bustaPlayer.getPlayer().sendMessage(manager.prefix + "Display added");
                         return true;
                     }
                 }
@@ -126,10 +133,26 @@ public class BustaPlugDJ extends JavaPlugin {
                 } else {
                     if(bustaPlayer.getStatus() == BustaPlayer.Status.SETUP_FIREWORKS) {
                         bustaPlayer.setStatus(BustaPlayer.Status.ABSENT);
-                        bustaPlayer.getPlayer().sendMessage("Disabled SETUP_FIREWORKS");
+                        bustaPlayer.getPlayer().sendMessage(manager.prefix + "Disabled SETUP_FIREWORKS");
                     } else {
                         bustaPlayer.setStatus(BustaPlayer.Status.SETUP_FIREWORKS);
-                        bustaPlayer.getPlayer().sendMessage("Enabled SETUP_FIREWORKS, click firework launchers to add them");
+                        bustaPlayer.getPlayer().sendMessage(manager.prefix + "Enabled SETUP_FIREWORKS, click firework launchers to add them");
+                    }
+                    return true;
+                }
+            }
+
+            // /plugdj setupFire
+            else if(args[0].equalsIgnoreCase("setupFire")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    if(bustaPlayer.getStatus() == BustaPlayer.Status.SETUP_FIRE) {
+                        bustaPlayer.setStatus(BustaPlayer.Status.ABSENT);
+                        bustaPlayer.getPlayer().sendMessage(manager.prefix + "Disabled SETUP_FIRE");
+                    } else {
+                        bustaPlayer.setStatus(BustaPlayer.Status.SETUP_FIRE);
+                        bustaPlayer.getPlayer().sendMessage(manager.prefix + "Enabled SETUP_FIRE, click fire launchers to add them");
                     }
                     return true;
                 }
@@ -141,6 +164,7 @@ public class BustaPlugDJ extends JavaPlugin {
                     return false;
                 } else {
                     manager.setDjSpawn(bustaPlayer.getPlayer().getLocation());
+                    bustaPlayer.getPlayer().sendMessage(manager.prefix + "Set DJ Spawn");
                 }
             }
 
@@ -150,6 +174,7 @@ public class BustaPlugDJ extends JavaPlugin {
                     return false;
                 } else {
                     manager.setAudienceSpawn(bustaPlayer.getPlayer().getLocation());
+                    bustaPlayer.getPlayer().sendMessage(manager.prefix + "Set Audience Spawn");
                 }
             }
 
@@ -158,7 +183,11 @@ public class BustaPlugDJ extends JavaPlugin {
                 if(args.length != 1) {
                     return false;
                 } else {
-                    bustaPlayer.setStatus(BustaPlayer.Status.DJ);
+                    if(bustaPlayer.getPlayer().hasPermission("plugdj.debug")) {
+                        bustaPlayer.setStatus(BustaPlayer.Status.DJ);
+                    } else {
+                        bustaPlayer.getPlayer().sendMessage(manager.prefix + "You do not have permission to do that.");
+                    }
                     return true;
                 }
             }
@@ -169,6 +198,18 @@ public class BustaPlugDJ extends JavaPlugin {
                     return false;
                 } else {
                     bustaPlayer.setStatus(BustaPlayer.Status.AUDIENCE);
+                    bustaPlayer.getPlayer().sendMessage(manager.prefix + "You joined the plugdj audience!");
+                    return true;
+                }
+            }
+
+            // /plugdj leave
+            else if(args[0].equalsIgnoreCase("leave")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    bustaPlayer.setStatus(BustaPlayer.Status.ABSENT);
+                    bustaPlayer.getPlayer().sendMessage(manager.prefix + "You left the plugdj audience!");
                     return true;
                 }
             }
@@ -179,6 +220,7 @@ public class BustaPlugDJ extends JavaPlugin {
                     return false;
                 } else {
                     bustaPlayer.setPlugDJUsername(args[1]);
+                    bustaPlayer.getPlayer().sendMessage(manager.prefix + "Your plugdj name has been set to " + args[1]);
                 }
             }
 

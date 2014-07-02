@@ -54,17 +54,19 @@ public class EventListener {
     }
 
     public void onDJAdvance(DJAdvanceEvent event) {
-
+        Bukkit.broadcastMessage("DJAdvanceEvent");
+        BustaPlayer newDJ = manager.getBustaPlayer(event.getDj().getUsername());
+        if(newDJ != null) {
+            newDJ.setStatus(BustaPlayer.Status.DJ);
+        } else {
+            if(manager.getCurrentDJ() != null) {
+                manager.getCurrentDJ().setStatus(BustaPlayer.Status.AUDIENCE);
+            }
+        }
     }
 
     public void onDJUpdate(DJUpdateEvent event) {
-        manager.getCurrentDJ().setStatus(BustaPlayer.Status.AUDIENCE);
-        if(!manager.getCurrentDJ().getPlugDJUsername().equalsIgnoreCase(event.getUser().getUsername())) {
-            BustaPlayer newDJ = manager.getBustaPlayer(event.getUser().getUsername());
-            if(newDJ != null) {
-                newDJ.setStatus(BustaPlayer.Status.DJ);
-            }
-        }
+
     }
 
     public void onWaitListUpdate(WaitListUpdateEvent event) {

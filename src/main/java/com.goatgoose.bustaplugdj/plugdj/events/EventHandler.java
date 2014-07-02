@@ -1,5 +1,6 @@
 package com.goatgoose.bustaplugdj.plugdj.events;
 
+import com.goatgoose.bustaplugdj.plugdj.model.DJAdvanceWrapper;
 import com.goatgoose.bustaplugdj.plugdj.model.MessageContainer;
 import com.goatgoose.bustaplugdj.plugdj.model.User;
 import com.google.gson.Gson;
@@ -37,6 +38,11 @@ public class EventHandler {
 
             if(eventType == EventType.DJ_UPDATE) {
                 new DJUpdateEvent(gson.fromJson(message, User.class));
+            }
+
+            if(eventType == EventType.DJ_ADVANCE) {
+                DJAdvanceWrapper wrapper = gson.fromJson(message, DJAdvanceWrapper.class);
+                new DJAdvanceEvent(wrapper.getUsers(), wrapper.getMedia(), wrapper.getDj());
             }
 
         }

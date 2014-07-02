@@ -6,7 +6,7 @@ public class Media {
 
     private String cid;
 
-    private int duration;
+    private double duration;
 
     private String format;
 
@@ -26,7 +26,7 @@ public class Media {
         return cid;
     }
 
-    public int getDuration() {
+    public double getDuration() {
         return duration;
     }
 
