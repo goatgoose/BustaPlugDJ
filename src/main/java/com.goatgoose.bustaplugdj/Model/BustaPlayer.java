@@ -2,7 +2,10 @@ package com.goatgoose.bustaplugdj.model;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class BustaPlayer {
 
@@ -43,9 +46,16 @@ public class BustaPlayer {
             if(djSpawn != null) {
                 player.teleport(djSpawn);
             }
+
+            Inventory inventory = getPlayer().getInventory();
+            inventory.clear();
+            inventory.addItem(new ItemStack(Material.GLOWSTONE));
+            inventory.addItem(new ItemStack(Material.FIREWORK));
+            inventory.addItem(new ItemStack(Material.FIRE));
         }
 
         if(status == Status.AUDIENCE) {
+            getPlayer().getInventory().clear();
             Location audienceSpawn = manager.getAudienceSpawn();
             if(audienceSpawn != null) {
                 player.teleport(audienceSpawn);

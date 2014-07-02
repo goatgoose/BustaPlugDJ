@@ -5,12 +5,14 @@ import com.goatgoose.bustaplugdj.model.BustaPlugDJMananger;
 import com.goatgoose.bustaplugdj.model.FireLauncher;
 import com.goatgoose.bustaplugdj.model.FireworkLauncher;
 import com.goatgoose.bustaplugdj.model.BustaPlayer;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
 
@@ -38,16 +40,15 @@ public class PlayerListener implements Listener {
         BustaPlayer bustaPlayer = manager.getBustaPlayer(event.getPlayer());
 
         if(bustaPlayer.getStatus() == BustaPlayer.Status.DJ) {
+            event.setCancelled(true);
 
             if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                if(event.getPlayer().getInventory().getHeldItemSlot() == 0) {
-                    event.setCancelled(true);
+                if(event.getPlayer().getItemInHand().getType() == Material.GLOWSTONE) {
                     manager.getStage().flashDisplay();
-                } else if(event.getPlayer().getInventory().getHeldItemSlot() == 1) {
-                    event.setCancelled(true);
+                } else if(event.getPlayer().getItemInHand().getType() == Material.FIREWORK) {
                     manager.getStage().flashDisplay();
                     manager.getStage().launchFireworks();
-                } else if(event.getPlayer().getInventory().getHeldItemSlot() == 2) {
+                } else if(event.getPlayer().getItemInHand().getType() == Material.FIRE) {
                     manager.getStage().toggleFire();
                 }
             }
@@ -59,7 +60,7 @@ public class PlayerListener implements Listener {
             if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 event.setCancelled(true);
                 manager.getStage().addFireworkLauncher(new FireworkLauncher(event.getClickedBlock()));
-                bustaPlayer.getPlayer().sendMessage("Block added to firework launchers");
+                bustaPlayer.getPlayer().sendMessage(manager.prefix + "Block added to firework launchers");
             }
 
         } else if(bustaPlayer.getStatus() == BustaPlayer.Status.SETUP_FIRE) {
@@ -67,7 +68,7 @@ public class PlayerListener implements Listener {
             if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 event.setCancelled(true);
                 manager.getStage().addFireLauncher(new FireLauncher(event.getClickedBlock()));
-                bustaPlayer.getPlayer().sendMessage("Block added to fire launchers");
+                bustaPlayer.getPlayer().sendMessage(manager.prefix + "Block added to fire launchers");
             }
         }
     }
