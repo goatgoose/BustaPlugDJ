@@ -7,12 +7,19 @@ import com.goatgoose.bustaplugdj.plugdj.SocketHandler;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
@@ -20,7 +27,6 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 public class BustaPlugDJ extends JavaPlugin {
 
     // TODO
-    // - Add blocks to each action in toolbar (ie firework for launchFireworks, torch for lights)
     // - Separate display into 3 sections, and light up each part depending on f coord
     // - Firework groups with multiple icons to emit each of them separately
     // - Firework colors with a popup menu to select them
@@ -178,6 +184,16 @@ public class BustaPlugDJ extends JavaPlugin {
                 }
             }
 
+            // /plugdj setTutorialSpawn
+            else if(args[0].equalsIgnoreCase("setTutorialSpawn")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    manager.setTutorialSpawn(bustaPlayer.getPlayer().getLocation());
+                    bustaPlayer.getPlayer().sendMessage(manager.prefix + "Set Tutorial Spawn");
+                }
+            }
+
             // /plugdj dj
             else if(args[0].equalsIgnoreCase("dj")) {
                 if(args.length != 1) {
@@ -221,6 +237,57 @@ public class BustaPlugDJ extends JavaPlugin {
                 } else {
                     bustaPlayer.setPlugDJUsername(args[1]);
                     bustaPlayer.getPlayer().sendMessage(manager.prefix + "Your plugdj name has been set to " + args[1]);
+                }
+            }
+
+            // /plugdj tutorial
+            else if(args[0].equalsIgnoreCase("tutorial")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    if(manager.getTutorialSpawn() != null) {
+                        bustaPlayer.getPlayer().teleport(manager.getTutorialSpawn());
+                    } else {
+                        bustaPlayer.getPlayer().sendMessage(manager.prefix + "Unable to find plug.dj tutorial.  Please contact a server administrator for help.");
+                    }
+                    return true;
+                }
+            }
+
+            // /plugdj url
+            else if(args[0].equalsIgnoreCase("url")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    bustaPlayer.getPlayer().sendMessage(manager.prefix + "http://plug.dj/pixelroyale/");
+                    return true;
+                }
+            }
+
+            // /plugdj info
+            else if(args[0].equalsIgnoreCase("info")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    bustaPlayer.getPlayer().sendMessage(manager.prefix + "Click here for more info about plug.dj: http://support.plug.dj/hc/en-us");
+                    return true;
+                }
+            }
+
+            // /plugdj test
+            else if(args[0].equalsIgnoreCase("test")) {
+                if(args.length != 1) {
+                    return false;
+                } else {
+                    if(bustaPlayer.getPlayer().hasPermission("plugdj.debug")) {
+                        final BustaPlayer finalBustaPlayer = bustaPlayer;
+                        new BukkitRunnable() {
+                            public void run() {
+                                Location location = finalBustaPlayer.getPlayer().getLocation();
+                                location.getWorld().playEffect(location, Effect.MOBSPAWNER_FLAMES, 2003);
+                            }
+                        }.runTaskTimer(this, 0, 1);
+                    }
                 }
             }
 

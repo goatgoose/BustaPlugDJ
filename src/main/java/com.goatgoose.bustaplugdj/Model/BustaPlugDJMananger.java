@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BustaPlugDJMananger {
@@ -25,6 +26,8 @@ public class BustaPlugDJMananger {
 
     private Location audienceSpawn;
 
+    private Location tutorialSpawn;
+
     public final String prefix = ChatColor.GRAY + "[" + ChatColor.BLUE + "BustaPlugDJ" + ChatColor.GRAY + "] " + ChatColor.LIGHT_PURPLE;
 
     public BustaPlugDJMananger(BustaPlugDJ plugin) {
@@ -34,6 +37,10 @@ public class BustaPlugDJMananger {
             this.eventListener = new EventListener(INSTANCE);
             this.stage = new Stage(plugin);
         }
+    }
+
+    public static BustaPlugDJMananger getInstance() {
+        return INSTANCE;
     }
 
     public BustaPlayer getCurrentDJ() {
@@ -46,8 +53,20 @@ public class BustaPlugDJMananger {
         return null;
     }
 
-    public static BustaPlugDJMananger getInstance() {
-        return INSTANCE;
+    public void displayNotification(BustaPlayer bustaPlayer, String notification, String[] message) {
+        Player player = bustaPlayer.getPlayer();
+        String title = ChatColor.GREEN + "▂ ▄ ▆ ▉ " + ChatColor.GRAY + "[" + ChatColor.RED + "BustaPlugDJ" + ChatColor.GRAY + "]  - " + ChatColor.AQUA + notification + ChatColor.GREEN + " ▉ ▆ ▄ ▂";
+        player.sendMessage(title);
+        player.sendMessage(message);
+
+        String footer = ChatColor.GREEN + "▂ ▄ ▆ ▉ ";
+        for(int i = 0; i < title.length() - 16; i++) {
+            footer = footer + "=";
+        }
+        footer = footer + " ▉ ▆ ▄ ▂";
+
+        player.sendMessage(footer);
+
     }
 
     public void addBustaPlayer(BustaPlayer bustaPlayer) {
@@ -104,6 +123,14 @@ public class BustaPlugDJMananger {
 
     public void setAudienceSpawn(Location audienceSpawn) {
         this.audienceSpawn = audienceSpawn;
+    }
+
+    public Location getTutorialSpawn() {
+        return tutorialSpawn;
+    }
+
+    public void setTutorialSpawn(Location tutorialSpawn) {
+        this.tutorialSpawn = tutorialSpawn;
     }
 
 }

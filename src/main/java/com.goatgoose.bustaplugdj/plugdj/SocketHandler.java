@@ -15,7 +15,7 @@ public class SocketHandler {
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
-        Bukkit.broadcastMessage(prefix + "SOCKET_CONNECT: " + session.getRemoteAddress());
+        //Bukkit.broadcastMessage(prefix + "SOCKET_CONNECT: " + session.getRemoteAddress());
     }
 
     @OnWebSocketClose

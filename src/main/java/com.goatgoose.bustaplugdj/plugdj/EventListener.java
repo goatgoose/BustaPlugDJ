@@ -54,7 +54,7 @@ public class EventListener {
     }
 
     public void onDJAdvance(DJAdvanceEvent event) {
-        Bukkit.broadcastMessage("DJAdvanceEvent");
+        //Bukkit.broadcastMessage("DJAdvanceEvent");
         BustaPlayer newDJ = manager.getBustaPlayer(event.getDj().getUsername());
         if(newDJ != null) {
             newDJ.setStatus(BustaPlayer.Status.DJ);

@@ -58,9 +58,27 @@ public class Stage {
         }
     }
 
+    public void removeFireworkLauncher(Block block) {
+        for(FireworkLauncher fireworkLauncher : fireworkLaunchers) {
+            if(fireworkLauncher.getBlock() == block) {
+                fireworkLaunchers.remove(fireworkLauncher);
+                return;
+            }
+        }
+    }
+
     public void addFireLauncher(FireLauncher fireLauncher) {
         if(!(fireLaunchers.contains(fireLauncher))) {
             fireLaunchers.add(fireLauncher);
+        }
+    }
+
+    public void removeFireLauncher(Block block) {
+        for(FireLauncher fireLauncher : fireLaunchers) {
+            if(fireLauncher.getBlock() == block) {
+                fireworkLaunchers.remove(fireLauncher);
+                return;
+            }
         }
     }
 }

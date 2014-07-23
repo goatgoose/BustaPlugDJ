@@ -38,4 +38,8 @@ public class FireworkLauncher {
 
         firework.setFireworkMeta(fireworkMeta);
     }
+
+    public Block getBlock() {
+        return block;
+    }
 }

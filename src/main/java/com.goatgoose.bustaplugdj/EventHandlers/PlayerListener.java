@@ -63,12 +63,24 @@ public class PlayerListener implements Listener {
                 bustaPlayer.getPlayer().sendMessage(manager.prefix + "Block added to firework launchers");
             }
 
+            if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                event.setCancelled(true);
+                manager.getStage().removeFireworkLauncher(event.getClickedBlock());
+                bustaPlayer.getPlayer().sendMessage(manager.prefix + "Block removed from firework launchers");
+            }
+
         } else if(bustaPlayer.getStatus() == BustaPlayer.Status.SETUP_FIRE) {
 
             if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 event.setCancelled(true);
                 manager.getStage().addFireLauncher(new FireLauncher(event.getClickedBlock()));
                 bustaPlayer.getPlayer().sendMessage(manager.prefix + "Block added to fire launchers");
+            }
+
+            if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                event.setCancelled(true);
+                manager.getStage().removeFireLauncher(event.getClickedBlock());
+                bustaPlayer.getPlayer().sendMessage(manager.prefix + "Block removed from fire launchers");
             }
         }
     }
